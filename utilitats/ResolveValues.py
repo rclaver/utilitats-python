@@ -35,35 +35,29 @@ class stackResolveValues(abstractResolveValues):
                 ]
     pila = []
 
-    def parse(self, params):
-        self.param = params
-        #while self.param:
-        for rslvr in self.resolvers:
-            instance = globals()[rslvr]()
-            print("Resolver:", rslvr, "- param:", self.param)
-            if (instance.match(self.param)):
-                instance.extract(self.param)
-                self.param = instance.getToParse()
-                if (instance.isSeparator()):
-                    if (instance.getMainParam() is None):
+    def parse(self, param):
+        while param:
+            for rslvr in self.resolvers:
+                instance = globals()[rslvr]()
+                if (instance.match(param)):
+                    instance.extract(param)
+                    param = instance.getToParse()
+                    if (instance.isSeparator()):
+                        if (instance.getMainParam() is not None):
+                            self.pila.append(instance.getValue())
+                        if (self.isTerminator(instance.getDelimiter())):    #alternativa: instance.isTerminator()
+                            return param      #eliminar, de los parámetros restantes, la parte ya tratada
+                    else:
+                        param = instance.parse(param)
                         self.pila.append(instance.getValue())
-                    if (self.isTerminator(instance.getDelimiter())):    #alternativa: instance.isTerminator()
-                        return self.param      #eliminar, de los parámetros restantes, la parte ya tratada
-                else:
-                    self.param = instance.parse(self.param)
-                    self.pila.append(instance.getValue())
 
-                #print(rslvr)
-                #break
-
-        #return [instance.getMainParam(), instance.getDelimiter(), instance.getToParse()]
         return self.pila
 
 
 class ResolveValues(stackResolveValues):
 
     def resolve(self, param):
-        result = stackResolveValues().parse(param)
+        result = self.parse(param)
         print(result)
 
     def isTerminator(self, delimiter=""):
@@ -74,6 +68,7 @@ class ResolveValues(stackResolveValues):
 class rslvResolveFunction(stackResolveValues):
     className = "rslvResolveFunction"
     pattern = '^(\w+)(\()(.*)'
+    pila = []
 
     def match(self, param):
         return bool(re.match(self.pattern, param))
@@ -87,8 +82,8 @@ class rslvResolveFunction(stackResolveValues):
             elif param:
                 parsedParams.append(param)
 
-        #result = eval(funcName + "(self.pila)")
-        return 55   #result
+        result = eval(funcName + "(self.pila)")
+        return result
 
     def extract(self, param):
         match = re.fullmatch(self.pattern, param)
@@ -105,6 +100,7 @@ class rslvResolveFunction(stackResolveValues):
 class rslvResolveArray(stackResolveValues):
     className = "rslvResolveArray"
     pattern = '^(\[)(.*)'
+    pila = []
 
     def match(self, param):
         return bool(re.match(self.pattern, param))
@@ -127,6 +123,7 @@ class rslvResolveArray(stackResolveValues):
 class rslvResolveObject(stackResolveValues):
     className = "rslvResolveObject"
     pattern = '^({)(.*)'
+    pila = []
 
     def match(self, param):
         return bool(re.match(self.pattern, param))
@@ -174,7 +171,6 @@ class rslvExtractQString(stackResolveValues):
     pattern = '^(".*?[^\\\\]")(,|\)|\]|\})?(.*)'
 
     def match(self, param):
-        print("rslvExtractQString:",param)
         return bool(re.match(self.pattern, param))
 
     def getValue(self):
@@ -214,22 +210,18 @@ class rslvExtractString(stackResolveValues):
         return (self.delimiter != ",")   # versió sense paràmetre: (self.getDelimiter() != ",")
 
 
+def suma(param):
+   result = 0
+   for elem in param:
+      result += int(elem)
+   return result
+
+def init():
+    arg = input("Escriu una funció: ")    #arg = 'suma(4,7)'
+    return ResolveValues().resolve(arg)
+
 print("====================================")
 print("Classes per a ResolveValues")
 print("====================================")
 
-def suma(a):
-#    print(r"suma:")
-#    print(a)
-    return 1003
-
-def actualParams():
-    global arg
-    arg = input("Escriu una funció: ")    #arg = 'suma("Casa"+"Una")'
-
-# Tratamiento de los argumentos de la línea de comandos
-arg = sys.argv[1:]
-if (len(arg) == 0):
-    actualParams()
-
-result = ResolveValues().resolve(arg)
+init()
