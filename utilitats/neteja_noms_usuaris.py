@@ -3,8 +3,9 @@
 # Created on : 26 oct. 2023, 12:14:21
 # Author     : rafael
 # Script per a la neteja dels noms d'usuari en els arxius de projectes
-import os, sys, socket, shutil
+import os, sys, socket
 import re
+import json
 
 C_NONE="\033[0m"
 C_CYN="\033[0;36m"  #normal
@@ -19,52 +20,61 @@ print(CB_CYN+"==================================================================
 
 # Valors per defecte
 if (socket.gethostname() == "LM19"):
-    RUN_DIR="~/Vídeos"
+    RUN_DIR="/home/rafael/Vídeos"
+elif (socket.gethostname() == "anaconda21"):
+    RUN_DIR="/home/rafael/Descargas"
 else:
-    RUN_DIR="~/wiki18/data/mdprojects"	# servidor dokuwiki
+    RUN_DIR="/home/dokuwiki/wiki18/data/mdprojects"	# servidor dokuwiki
 
-LOG = RUN_DIR+"/resultat_neteja_noms_usuaris.txt"
+LOG = RUN_DIR+"/neteja_noms_usuaris.log"
+log = open(LOG, "a")
 
 # Establecer el directorio RUN_DIR como directorio actual
 os.chdir(RUN_DIR)
 RUN_DIR = "."
 
+def remove_whitespace(data, keys, replace=False):
+    if isinstance(data, dict):
+        for key, value in data.items():
+            data[key] = remove_whitespace(value, keys, key in keys)
+    elif replace:
+        data = data.replace(' ', '')
+
+    return data
+
 # Recorre recursivamente el directorio RUN_DIR buscando los archivos de proyecto 'meta.mdpr'
 # A continuación limpia
-def voltarDirectori():
+def voltaDirectori(dir):
 
-    # Voltar el directori per obtenir tots els seus elements que han de ser tractats
-    def voltaLinks(log, dir):
-        slist = os.listdir(dir)
-        slist.sort()
-
-        for file in slist:
-            actual = dir+"/"+file
-            if (os.path.isdir(actual)):
-                voltaLinks(log, actual)
-                log.write("- directori " + actual + "\n")
-            elif (file=='meta.mdpr' and os.path.isfile(actual)):
-                arxiu = open(actual, "r")
-                s = re.search('"(autor|creador|responsable)":(".*?")', arxiu)
-                re.sub(r'"(autor|creador|responsable)":(".*?")', '"\1":\2', arxiu)
-                log.write("-- hallado en " + actual + ": " + s[0] + "\n")
-
-        return
-
-    listFiles = os.listdir(RUN_DIR)
+    listFiles = os.listdir(dir)
     listFiles.sort()
-    log = open(LOG, "a")
 
-    for d in listFiles:
-        print("directori "+CB_GRN+d+C_NONE)
-        log.write("directori " + d + "\n")
-        voltaLinks(log, d)
-        log.close()
+    for file in listFiles:
+        actual = dir+"/"+file
+        print("arxiu "+CB_GRN+actual+C_NONE)
+        log.write("arxiu "+actual+"\n")
+
+        if (os.path.isdir(actual)):
+            voltaDirectori(actual)
+        elif (file=='meta.mdpr' and os.path.isfile(actual)):
+            #f = open(actual, "r")
+            #data = f.read()
+            #pattern = '"(autor|coordinador|creador|responsable|supervisor)":"(?:(\w)?(\s*,?))*"'
+            #pattern = '"(AUT|CRE|RES|SUP)":"(\w*)(\s*)(,*)"'
+            #s = re.search(pattern, data)
+            #re.sub(r pattern, '"\1":\2', data)
+            f = open(actual, "r")
+            data = f.read()
+            keys = ['autor','coordinador','creador','responsable','supervisor']
+            result = json.dumps(remove_whitespace(json.loads(data), keys))
+            f = open(actual+".result", "w")
+            f.write(result)
 
     return
 
 # ----
 # main
 # ----
-voltarDirectori()
+voltaDirectori(RUN_DIR)
+log.close()
 print("=== FI ===")
