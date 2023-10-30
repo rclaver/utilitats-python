@@ -4,7 +4,7 @@
 # Author     : rafael
 # Script per a la neteja dels noms d'usuari en els arxius de projectes
 import os, sys, socket
-import re
+#import re
 import json
 
 C_NONE="\033[0m"
@@ -23,22 +23,28 @@ if (socket.gethostname() == "LM19"):
     RUN_DIR="/home/rafael/Vídeos"
 elif (socket.gethostname() == "anaconda21"):
     RUN_DIR="/home/rafael/Descargas"
+elif (socket.gethostname() == "wikidev"):
+    RUN_DIR="/home/wikidev/wiki18/data/mdprojects"	# servidor wikidev
 else:
     RUN_DIR="/home/dokuwiki/wiki18/data/mdprojects"	# servidor dokuwiki
 
-LOG = RUN_DIR+"/neteja_noms_usuaris.log"
-log = open(LOG, "a")
+ACTUAL_DIR = os.getcwd()
+LOG = ACTUAL_DIR+"/neteja_noms_usuaris.log"
+log = open(LOG, "w")
 
 # Establecer el directorio RUN_DIR como directorio actual
 os.chdir(RUN_DIR)
 RUN_DIR = "."
 
-def remove_whitespace(data, keys, replace=False):
+def remove_whitespace(data, keys, logfile, replace=False):
     if isinstance(data, dict):
         for key, value in data.items():
-            data[key] = remove_whitespace(value, keys, key in keys)
+            data[key] = remove_whitespace(value, keys, logfile, key in keys)
     elif replace:
-        data = data.replace(' ', '')
+        if data.count(' ') > 0:
+            print("arxiu "+CB_GRN+logfile+C_NONE)
+            log.write("arxiu "+logfile+"\n")
+            data = data.replace(' ', '')
 
     return data
 
@@ -51,22 +57,20 @@ def voltaDirectori(dir):
 
     for file in listFiles:
         actual = dir+"/"+file
-        print("arxiu "+CB_GRN+actual+C_NONE)
-        log.write("arxiu "+actual+"\n")
 
         if (os.path.isdir(actual)):
             voltaDirectori(actual)
         elif (file=='meta.mdpr' and os.path.isfile(actual)):
             #f = open(actual, "r")
             #data = f.read()
-            #pattern = '"(autor|coordinador|creador|responsable|supervisor)":"(?:(\w)?(\s*,?))*"'
+            #pattern = '"(autor|creador|responsable|revisor|supervisor|validador)":"(?:(\w)?(\s*,?))*"'
             #pattern = '"(AUT|CRE|RES|SUP)":"(\w*)(\s*)(,*)"'
             #s = re.search(pattern, data)
             #re.sub(r pattern, '"\1":\2', data)
             f = open(actual, "r")
             data = f.read()
-            keys = ['autor','coordinador','creador','responsable','supervisor']
-            result = json.dumps(remove_whitespace(json.loads(data), keys))
+            keys = ['autor','creador','responsable','revisor','supervisor','validador']
+            result = json.dumps(remove_whitespace(json.loads(data), keys, actual))
             f = open(actual+".result", "w")
             f.write(result)
 
@@ -78,3 +82,4 @@ def voltaDirectori(dir):
 voltaDirectori(RUN_DIR)
 log.close()
 print("=== FI ===")
+
