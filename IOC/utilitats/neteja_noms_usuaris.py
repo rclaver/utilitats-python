@@ -42,9 +42,9 @@ def remove_whitespace(data, keys, logfile, replace=False):
             data[key] = remove_whitespace(value, keys, logfile, key in keys)
     elif replace:
         if data.count(' ') > 0:
-            print("arxiu "+CB_GRN+logfile+C_NONE)
-            log.write("arxiu "+logfile+"\n")
-            data = data.replace(' ', '')
+           print("arxiu "+CB_GRN+logfile+C_NONE)
+           log.write("arxiu "+logfile+"\n")
+           data = data.replace(' ', '')
 
     return data
 
@@ -67,6 +67,7 @@ def voltaDirectori(dir):
             #pattern = '"(AUT|CRE|RES|SUP)":"(\w*)(\s*)(,*)"'
             #s = re.search(pattern, data)
             #re.sub(r pattern, '"\1":\2', data)
+            #log.write("-- hallado en " + actual + ": " + s[0] + "\n")
             f = open(actual, "r")
             data = f.read()
             keys = ['autor','creador','responsable','revisor','supervisor','validador']
@@ -82,4 +83,3 @@ def voltaDirectori(dir):
 voltaDirectori(RUN_DIR)
 log.close()
 print("=== FI ===")
-
