@@ -1,6 +1,8 @@
-"""
-Definicio de les constants de colors
-"""
+# =======
+# COLORES
+# =======
+# Ejemplo: echo -e ${C_RED} rojo
+
 C_NONE="\033[0m"    # unsets color to term's fg color
 
 # regular colors
