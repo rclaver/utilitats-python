@@ -5,18 +5,49 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>L'apuntador del teatre</title>
   <link href="recursos/estils.css" rel="stylesheet" type="text/css" />
+  <link href="recursos/estils_mobil.css" rel="stylesheet" type="text/css" />
+  <script src="recursos/script.js"></script>
 </head>
 
 <body bgcolor="#FFFFFF">
   <div class="div_main contenidor">
     <div class="div_intern">
       <div class="titol">L'apuntador del teatre</div>
-      <div class="error text">errors</div>
-      <div class="escena text">Text de l'escena actual</div>
+      <div id="error" class="error text">errors</div>
+      <div id="escena_actual" class="escena text">Text de l'escena actual</div>
       <div class="div_botons contenidor">
-        <img class="imatge " src="recursos/web-anterior.png">
-        <img class="imatge" src="recursos/web-play.png">
-        <img class="imatge" src="recursos/web-seguent.png">
+        <img id="btn_anterior" class="imatge " src="recursos/web-anterior.png" onClick="anterior();">
+        <img id="btn_play" class="imatge" src="recursos/web-play.png" onClick="play('escena');">
+        <img id="btn_seguent" class="imatge" src="recursos/web-seguent.png" onClick="seguent();">
+      </div>
+      <div id="div_formulari">
+        <form class="formulari" onsubmit="formulari(); return false;">
+          <legend >Selecció d'escenes</legend><br>
+          <select name="seleccio_escenes" id="seleccio_escenes" size=18>
+            <optgroup label="agrupades">
+              <option value="sencer">obra sencera</option>
+              <option value="joan">Joan</option>
+            </optgroup>
+            <optgroup label="primera part" multiple>
+              <option value="101">escena 101 inici</option>
+              <option value="102">escena 102 - pàgina 7</option>
+              <option value="103">escena 103 - pàgina 10</option>
+              <option value="104">escena 104 - pàgina 13</option>
+              <option value="105">escena 105 - pàgina 14</option>
+              <option value="106">escena 106 - pàgina 17</option>
+            </optgroup>
+            <optgroup label="segona part" multiple>
+              <option value="201">escena 201 - pàgina 31</option>
+              <option value="202">escena 202 - pàgina 33</option>
+              <option value="203">escena 203 - pàgina 36</option>
+              <option value="204">escena 204 - pàgina 42</option>
+              <option value="205">escena 205 - pàgina 48</option>
+              <option value="206">escena 206 - pàgina 51</option>
+              <option value="207">escena 207 - pàgina 57</option>
+            </optgroup>
+          </select>
+          <p><input type="submit" value="enviar"></p>
+         </form>
       </div>
     </div>
   </div>
