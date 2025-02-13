@@ -1,0 +1,88 @@
+@media only screen and (max-width: 700px) {
+  :root {
+    --div-main-min-height: 800px;
+    --div-main-height: 621px; /* 621px */
+    --div-main-width: 378px;  /* 879px */
+    --div-main-background-color: Orange;
+    --div-html-size: 20px;
+    --div-titol-size: 30px;
+    --div-text-size: 20px;
+    --div-error-color: blue;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  :root {
+    --div-main-min-height: 100vh;
+    --div-main-height: 100%;
+    --div-main-width: 100vh;
+    --div-main-background-color: LightGray;
+    --div-html-size: 20px;
+    --div-titol-size: 30px;
+    --div-text-size: 20px;
+    --div-error-color: red;
+  }
+}
+
+html {
+  font-family: Arial,Sans-serif;
+  font-size: var(--div-html-size);
+}
+.titol {
+  font-size: var(--div-titol-size);
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.contenidor {
+  margin:auto;
+  text-align: center;
+}
+.div_main {
+  display: block;
+  min-height: var(--div-main-min-height);
+  height: var(--div-main-height);
+  width: var(--div-main-min-width);
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  overflow: none;
+  text-align: center;
+  background-color: var(--div-main-background-color);
+}
+.div_intern {
+  display: block; /* grid;*/
+}
+.div_botons {
+  display: none; /* block */
+}
+.imatge {
+  width: 48px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.text {
+  font-size: var(--div-text-size);
+  font-weight: normal;
+}
+.error {
+  display: none;
+  visibility: hidden;
+  margin-bottom: 10px;
+  text-align: left;
+  color: var(--div-error-color);
+}
+.escena {
+  display: none; /* block */
+  margin-bottom: 10px;
+  min-height: 200px;
+  text-align: left;
+}
+div#div_formulari {
+  display: block;
+  margin: 40px auto 10px auto;
+}
+select {
+  border: 1px solid blue;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
