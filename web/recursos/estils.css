@@ -1,0 +1,48 @@
+html {
+  font-family: Arial,Sans-serif;
+}
+.titol {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.contenidor {
+  margin:auto;
+  text-align: center;
+}
+.div_main {
+  display: block;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  min-height: 100vh;
+  width: 100vh;
+  overflow: none
+  /*$('.scrollDiv').css('max-height', $(window).height());*/
+  text-align: center;
+}
+.div_intern {
+  display: grid;
+}
+.div_botons {
+  display: block;
+}
+.imatge {
+  width: 48px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.text {
+  font-size: 14px;
+  font-weight: normal;
+}
+.error {
+  display: none;
+  margin-bottom: 10px;
+}
+.escena {
+  display: block;
+  margin-bottom: 10px;
+  min-height: 200px;
+  text-align: left;
+}
