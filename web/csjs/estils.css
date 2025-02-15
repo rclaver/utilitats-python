@@ -4,9 +4,9 @@
     --div-main-height: 621px; /* 621px */
     --div-main-width: 378px;  /* 879px */
     --div-main-background-color: Orange;
-    --div-html-size: 20px;
-    --div-titol-size: 30px;
-    --div-text-size: 20px;
+    --div-html-size: 4.0em;
+    --div-titol-size: 6.0em;
+    --div-text-size: 4.0em;
     --div-error-color: blue;
   }
 }
@@ -15,7 +15,7 @@
   :root {
     --div-main-min-height: 100vh;
     --div-main-height: 100%;
-    --div-main-width: 100vh;
+    --div-main-width: 100%;
     --div-main-background-color: LightGray;
     --div-html-size: 20px;
     --div-titol-size: 30px;
@@ -24,9 +24,10 @@
   }
 }
 
-html {
+body {
   font-family: Arial,Sans-serif;
   font-size: var(--div-html-size);
+  background-color: var(--div-main-background-color);
 }
 .titol {
   font-size: var(--div-titol-size);
@@ -50,19 +51,10 @@ html {
   background-color: var(--div-main-background-color);
 }
 .div_intern {
-  display: block; /* grid;*/
+  display: block;
 }
 .div_botons {
-  display: none; /* block */
-}
-.imatge {
-  width: 48px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-.text {
-  font-size: var(--div-text-size);
-  font-weight: normal;
+  display: none;
 }
 .error {
   display: none;
@@ -72,7 +64,7 @@ html {
   color: var(--div-error-color);
 }
 .escena {
-  display: none; /* block */
+  display: none;
   margin-bottom: 10px;
   min-height: 200px;
   text-align: left;
@@ -81,8 +73,17 @@ div#div_formulari {
   display: block;
   margin: 40px auto 10px auto;
 }
-select {
+#seleccio_escenes {
   border: 1px solid blue;
   border-radius: 5px;
   padding: 10px 20px;
+}
+.imatge {
+  width: 48px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.text {
+  font-size: var(--div-text-size);
+  font-weight: normal;
 }

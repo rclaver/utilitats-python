@@ -14,18 +14,11 @@
     <div class="div_intern">
       <div class="titol">L'apuntador del teatre</div>
       <div id="div_error" class="error text"></div>
-      <div id="escena_actual" class="escena text"></div>
-
-      <div id="div_botons" class="div_botons contenidor">
-        <img id="btn_anterior" class="imatge " src="recursos/web-anterior.png" onClick="anterior();">
-        <img id="btn_play" class="imatge" src="recursos/web-play.png" onClick="play('escena');">
-        <img id="btn_seguent" class="imatge" src="recursos/web-seguent.png" onClick="seguent();">
-      </div>
 
       <div id="div_formulari">
-        <form class="formulari" onsubmit="formulari(); return false;">
+        <form class="formulari" method="get" action="apuntador.html">
           <legend >Selecció d'escenes</legend><br>
-          <select id="seleccio_escenes" name="seleccio_escenes" size=9>
+          <select name="seleccio_escenes" id="seleccio_escenes" size=9>
             <option value="sencer">obra sencera</option>
             <option value="joan">Joan</option>
             <option value="gisela">Gisela</option>
@@ -41,13 +34,4 @@
       </div>
     </div>
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var socket = io();
-      socket.emit('ready', function(data) {});
-      socket.on('change_result', function(data) {
-        document.getElementById('div_error').innerHTML = 'ESCENA: "' + data.result + '"';
-      });
-    });
-  </script>
 </body>
