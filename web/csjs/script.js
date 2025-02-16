@@ -46,24 +46,25 @@ function anterior() {
 function seguent() {
 }
 
+function get_parametres(param) {
+   let params = new URLSearchParams(document.location.search);
+   let value = params.get(param);
+   return value;
+}
+
 function visible(e, es_visible) {
-   if (es_visible) {
-      d = "block";
-      v = "visible";
-   }else {
-      d = "none";
-      v = "hidden";
-   }
+   let d = ((es_visible) ? "block" : "none");
+   let v = ((es_visible) ? "visible" : "hidden");
    document.getElementById(e).style.display = d;
    document.getElementById(e).style.visibility = v;
 }
 
 function get_propietat(e) {
-   ret = "weight: " + document.getElementById(e).style.fontWeight + ".";
-   return ret;
+   return "weight: " + document.getElementById(e).style.fontWeight + ".";
 }
 
 function get_screen_sizes(selection) {
+   var sizes;
    if (selection === "min") {
       sizes = "- body.clientHeight: " + document.body.clientHeight + "<br>" +
               "- window.screen.height: " + window.screen.height + "<br>" +

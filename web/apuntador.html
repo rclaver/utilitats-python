@@ -7,6 +7,7 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="csjs/estils.css" rel="stylesheet" type="text/css" />
   <script src="csjs/script.js"></script>
+
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -43,11 +44,9 @@
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var socket = io();
-      socket.emit('ready', function(data) {});
-      socket.on('change_result', function(data) {
-        document.getElementById('div_error').innerHTML = 'ESCENA: "' + data.result + '"';
-      });
+      var formu = formulari();
+      var actor = get_parametres("seleccio_escenes");
+      document.getElementById('div_error').innerHTML = 'Escenes de : "' + actor + '"';
     });
   </script>
 </body>
