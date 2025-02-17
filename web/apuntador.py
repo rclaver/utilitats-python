@@ -5,6 +5,7 @@ Creat: 31-01-2025
 @author: rafael claver
 @description: Programa interactiu per estudiar i practicar un personatge d'una obra de teatre
 
+pip install Flask
 pip install gTTS
 pip install pydub
 pip install soundfile
@@ -14,6 +15,8 @@ pip install SpeechRecognition
 """
 import sys, os, re
 import difflib
+
+from flask import Flask
 
 import soundfile as sf
 import pyworld as pw
@@ -31,32 +34,20 @@ from pydub.playback import play
 # paràmetres
 #
 escenes = input("Indica les escenes que vols processar: ").lower().split()
+actor = "Joan"
 
-if escenes:
-   if escenes == "sencer":
-      escenes = []
-   elif escenes == "joan":
-      escenes = ["102","104","202","204","205","207"]
-      print(f"\nEs convertiran les escenes de'n Joan: {escenes}", end='\n\n')
-   else:
-      escenes = escenes.split()
-      print(f"\nEs convertiran les escenes indicades: {escenes}", end='\n\n')
-else:
-   escenes = ["101","102","103","104","105","106","201","202","203","204","205","206","207"]
-   print(f"\nEs convertiran (per defecte) les escenes: {escenes}", end='\n\n')
+if escenes and escenes == "sencer":
+   escenes = []
 
 sencer = not (escenes)
-if sencer:
-   print(f"\nEs convertirà l'arxiu sencer", end='\n\n')
 
 # -----------------
 # variables globals
 #
 titol = "casats"
-actor = "Joan"
 
 dir_dades = "dades"
-base_arxiu_text = titol if sencer else f"{titol}-escena-"
+base_arxiu_text = titol if sencer else f"{titol}-{actor}-"
 dir_sortida = f"sortides/{titol}/estudi/"
 tmp3 = dir_sortida + "temp.mp3"
 twav = dir_sortida + "temp.wav"
@@ -101,6 +92,7 @@ def GeneraNomArxiuWav(escena, es_actor=False):
 Mostra, a la terminal, el text que s'està processant.
 Marca les escenes i realça el nom de l'actor
 '''
+@app.route('/apuntador')
 def MostraSentencia(text, ends):
    print(text, end=ends)
 
@@ -381,8 +373,11 @@ if __name__ == "__main__":
    pattern_person = "^(\w*?\s?)(:\s?)(.*$)"
    pattern_narrador = "([^\(]*)(\(.*?\))(.*)"
 
+   app = Flask(__name__)
+
    if sencer or not escenes:
       Proces()
    else:
+      escenes = os.listdir(f"{dir_dades}/{base_arxiu_text}*")
       for escena in escenes:
          Proces(escena)

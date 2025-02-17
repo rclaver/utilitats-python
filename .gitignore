@@ -2,6 +2,7 @@
 *.*~
 .htaccess
 *.pyc
+.venv
 .spyproject
 __pycache__/
 utilitats/__pycache__

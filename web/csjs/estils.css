@@ -1,28 +1,29 @@
+/*
 @media only screen and (max-width: 700px) {
   :root {
-    --div-main-min-height: 800px;
-    --div-main-height: 621px; /* 621px */
-    --div-main-width: 378px;  /* 879px */
+    --div-main-min-height: 100vh;
+    --div-main-height: 100vh;
+    --div-main-width: 100vh;
     --div-main-background-color: Orange;
-    --div-html-size: 4.0em;
-    --div-titol-size: 6.0em;
-    --div-text-size: 4.0em;
+    --div-html-size: 30px;
+    --div-titol-size: 40px;
+    --div-text-size: 30px;
     --div-error-color: blue;
   }
 }
-
-@media only screen and (min-width: 1024px) {
+*/
+/*@media only screen and (min-width: 1024px) {*/
   :root {
     --div-main-min-height: 100vh;
-    --div-main-height: 100%;
-    --div-main-width: 100%;
+    --div-main-height: 100vh;
+    --div-main-width: 100vh;
     --div-main-background-color: LightGray;
     --div-html-size: 20px;
     --div-titol-size: 30px;
     --div-text-size: 20px;
     --div-error-color: red;
   }
-}
+/*}*/
 
 body {
   font-family: Arial,Sans-serif;
@@ -42,11 +43,11 @@ body {
   display: block;
   min-height: var(--div-main-min-height);
   height: var(--div-main-height);
-  width: var(--div-main-min-width);
+  width: var(--div-main-width);
   border: 1px solid black;
   border-radius: 5px;
   padding: 5px;
-  overflow: none;
+  overflow: hidden;
   text-align: center;
   background-color: var(--div-main-background-color);
 }
@@ -77,6 +78,7 @@ div#div_formulari {
   border: 1px solid blue;
   border-radius: 5px;
   padding: 10px 20px;
+  overflow: hidden;
 }
 .imatge {
   width: 48px;
