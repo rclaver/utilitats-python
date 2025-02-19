@@ -36,7 +36,7 @@ function play(escena) {
       }
    };
 
-   xhr.open("POST","apuntador.py?do=play&escena="+escena);
+   xhr.open("POST","apuntador.py?escena="+escena);
    xhr.send();
 }
 

@@ -12,10 +12,9 @@
 <body bgcolor="#FFFFFF">
   <div class="contenidor">
     <div class="titol">L'apuntador del teatre</div>
-    <!--<div id="div_error" class="error text"></div>-->
 
     <form class="formulari" method="get" action="apuntador.html">
-      <legend >Selecció d'escenes</legend><br>
+      <legend >Selecci&oacute; d'escenes</legend><br>
       <select name="seleccio_escenes" id="seleccio_escenes" size=9>
         <option value="sencer">obra sencera</option>
         <option value="joan">Joan</option>

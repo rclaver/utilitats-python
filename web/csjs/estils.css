@@ -1,55 +1,20 @@
-/*
-@media only screen and (max-width: 700px) {
-  :root {
-    --div-main-min-height: 100vh;
-    --div-main-height: 100vh;
-    --div-main-width: 100vh;
-    --div-main-background-color: Orange;
-    --div-html-size: 30px;
-    --div-titol-size: 40px;
-    --div-text-size: 30px;
-    --div-error-color: blue;
-  }
-}
-*/
-/*@media only screen and (min-width: 1024px) {*/
-  :root {
-    --div-main-min-height: 100vh;
-    --div-main-height: 100vh;
-    --div-main-width: 100vh;
-    --div-main-background-color: LightGray;
-    --div-html-size: 20px;
-    --div-titol-size: 30px;
-    --div-text-size: 20px;
-    --div-error-color: red;
-  }
-/*}*/
-
 body {
   font-family: Arial,Sans-serif;
-  font-size: var(--div-html-size);
-  background-color: var(--div-main-background-color);
+  font-size: 30px;
+  background-image: url("../recursos/comedia.png");
+  background-repeat: no-repeat;
 }
 .titol {
-  font-size: var(--div-titol-size);
+  font-size: 40px;
   font-weight: bold;
   margin-bottom: 10px;
 }
 .contenidor {
-  margin:auto;
+  margin:0;
   text-align: center;
 }
 .div_main {
   display: block;
-  min-height: var(--div-main-min-height);
-  height: var(--div-main-height);
-  width: var(--div-main-width);
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 5px;
-  overflow: hidden;
-  text-align: center;
-  background-color: var(--div-main-background-color);
 }
 .div_intern {
   display: block;
@@ -62,7 +27,7 @@ body {
   visibility: hidden;
   margin-bottom: 10px;
   text-align: left;
-  color: var(--div-error-color);
+  color: red;
 }
 .escena {
   display: none;
@@ -78,14 +43,21 @@ div#div_formulari {
   border: 1px solid blue;
   border-radius: 5px;
   padding: 10px 20px;
+  margin: 0 50px;
   overflow: hidden;
+  width: 100%;
+  text-align: center;
+  font-size: 30px;
+}
+input[type=submit] {
+  font-size: 30px;
+}
+.text {
+  font-size: 30px;
+  font-weight: normal;
 }
 .imatge {
   width: 48px;
   padding-left: 20px;
   padding-right: 20px;
-}
-.text {
-  font-size: var(--div-text-size);
-  font-weight: normal;
 }
