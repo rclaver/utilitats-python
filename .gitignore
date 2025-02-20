@@ -1,6 +1,7 @@
 ~*
 *.*~
 .htaccess
+.env
 *.pyc
 .venv
 .spyproject

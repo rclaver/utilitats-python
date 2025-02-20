@@ -5,6 +5,7 @@ Creat: 19-02-2025
 @author: rafael claver
 @description: Programa interactiu per estudiar i practicar un personatge d'una obra de teatre
 
+pip install -r requirements.txt
 pip install gTTS
 pip install pydub
 pip install soundfile
@@ -13,21 +14,13 @@ pip install pyworld
 pip install SpeechRecognition
 """
 
-# ----------
-# paràmetres
-#
-escenes = input("Indica les escenes que vols processar: ").lower().split()
-actor = "Joan"
-
-if escenes and escenes == "sencer":
-   escenes = []
-
-sencer = not (escenes)
-
 # -----------------
 # variables globals
 #
 titol = "casats"
+escenes = ""
+actor = ""
+sencer = False
 
 dir_dades = "dades"
 base_arxiu_text = titol if sencer else f"{titol}-{actor}-"
@@ -35,8 +28,8 @@ dir_sortida = f"sortides/{titol}/estudi/"
 tmp3 = dir_sortida + "temp.mp3"
 twav = dir_sortida + "temp.wav"
 
-seq_fragment = 0  #número seqüencial per a la generació del nom d'arxiu wav de sortida d'una sentència
-seq_actor = 0     #número seqüencial per a la generació del nom d'arxiu wav temporal de la veu de l'actor
+seq_fragment = 0  #numero sequencial per a la generacio del nom d'arxiu wav de sortida d'una sentencia
+seq_actor = 0     #numero sequencial per a la generacio del nom d'arxiu wav temporal de la veu de l'actor
 pendent_escolta = False  #indica si ha arribat el moment d'escoltar l'actor
 
 Personatges = {'Joan':   {'speed': 1.18, 'grave': 3.2, 'reduction': 0.6},
@@ -54,5 +47,5 @@ Narrador = {'speed': 1.40, 'grave': 1.8, 'reduction': 1.3}
 #
 
 def index(req):
-   html = open("index.tpl").read()
-   return html;
+   html = open("/var/www/apuntador/plantilles/index.tpl").read()
+   return html

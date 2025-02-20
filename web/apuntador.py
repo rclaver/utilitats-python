@@ -5,6 +5,7 @@ Creat: 31-01-2025
 @author: rafael claver
 @description: Programa interactiu per estudiar i practicar un personatge d'una obra de teatre
 
+pip install -r requirements.txt
 pip install Flask
 pip install gTTS
 pip install pydub

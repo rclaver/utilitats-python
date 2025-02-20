@@ -5,16 +5,16 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>L'apuntador del teatre</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="csjs/estils.css" rel="stylesheet" type="text/css" />
-  <script src="csjs/script.js"></script>
+  <link href="../csjs/estils.css" rel="stylesheet" type="text/css" />
+  <script src="../csjs/script.js"></script>
 </head>
 
 <body bgcolor="#FFFFFF">
   <div class="contenidor">
     <div class="titol">L'apuntador del teatre</div>
 
-    <form class="formulari" method="get" action="apuntador.html">
-      <legend >Selecci&oacute; d'escenes</legend><br>
+    <form class="formulari" method="get" action="apuntador.tpl">
+      <legend >Selecció d'escenes</legend><br>
       <select name="seleccio_escenes" id="seleccio_escenes" size=9>
         <option value="sencer">obra sencera</option>
         <option value="joan">Joan</option>
