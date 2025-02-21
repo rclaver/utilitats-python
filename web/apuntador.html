@@ -5,43 +5,21 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>L'apuntador del teatre</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="csjs/estils.css" rel="stylesheet" type="text/css" />
-  <script src="csjs/script.js"></script>
-
+  <link rel="stylesheet" type="text/css" href="static/css/estils.css" />
+  <script src="static/js/script.js"></script>
 </head>
 
 <body bgcolor="#FFFFFF">
-  <!-- <div class="div_main contenidor"> -->
-    <!-- <div class="div_intern"> -->
   <div class="contenidor">
-      <div class="titol">L'apuntador del teatre</div>
-      <div id="div_error" class="error text"></div>
-      <div id="escena_actual" class="escena text"></div>
+    <div class="titol">L'apuntador del teatre</div>
+    <div id="div_error" class="error text"></div>
+    <div id="escena_actual" class="escena text"></div>
 
-      <div id="div_botons" class="div_botons contenidor">
-        <img id="btn_anterior" class="imatge " src="recursos/web-anterior.png" onClick="anterior();">
-        <img id="btn_play" class="imatge" src="recursos/web-play.png" onClick="play('escena');">
-        <img id="btn_seguent" class="imatge" src="recursos/web-seguent.png" onClick="seguent();">
-      </div>
-
-      <div id="div_formulari">
-        <form class="formulari" onsubmit="formulari(); return false;">
-          <legend >Selecci&oacute; d'escenes</legend><br>
-          <select id="seleccio_escenes" name="seleccio_escenes" size=9>
-            <option value="sencer">obra sencera</option>
-            <option value="joan">Joan</option>
-            <option value="gisela">Gisela</option>
-            <option value="canut">Canut</option>
-            <option value="emma">Emma</option>
-            <option value="mar">Mar</option>
-            <option value="justa">Justa</option>
-            <option value="tina">Tina</option>
-            <option value="pompeu">Pompeu</option>
-          </select>
-          <p><input type="submit" value="enviar"></p>
-         </form>
-      </div>
-    <!--</div>-->
+    <div id="div_botons" class="div_botons contenidor">
+      <img id="btn_anterior" class="imatge " src="static/img/web-anterior.png" onClick="anterior();">
+      <img id="btn_play" class="imatge" src="static/img/web-play.png" onClick="play('escena');">
+      <img id="btn_seguent" class="imatge" src="static/img/web-seguent.png" onClick="seguent();">
+    </div>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {

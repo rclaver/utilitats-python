@@ -49,3 +49,5 @@ Narrador = {'speed': 1.40, 'grave': 1.8, 'reduction': 1.3}
 def index(req):
    html = open("/var/www/apuntador/plantilles/index.tpl").read()
    return html
+
+#if __name__ == "__main__":

@@ -5,3 +5,5 @@ soundfile
 playsound
 pyworld
 SpeechRecognition
+python-dotenv
+gunicorn
