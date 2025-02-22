@@ -14,7 +14,7 @@ pip install playsound
 pip install pyworld
 pip install SpeechRecognition
 """
-import sys, os, re
+import os, re
 import difflib
 
 from flask import Flask
@@ -23,13 +23,13 @@ import soundfile as sf
 import pyworld as pw
 from gtts import gTTS
 from pydub import AudioSegment
+from pydub.playback import play
 
 import pyaudio
 import wave
 import playsound as plays
 import speech_recognition as sr
 from speech_recognition.recognizers import google
-from pydub.playback import play
 
 # ----------
 # paràmetres
@@ -93,7 +93,6 @@ def GeneraNomArxiuWav(escena, es_actor=False):
 Mostra, a la terminal, el text que s'està processant.
 Marca les escenes i realça el nom de l'actor
 '''
-@app.route('/apuntador')
 def MostraSentencia(text, ends):
    print(text, end=ends)
 
@@ -275,10 +274,10 @@ def TextToAudio(text, output_file, veu_params, ends, reprodueix=False):
          audio.export(twav, format="wav")
 
          # tractament de l'audio
-         x, fs = sf.read(twav)
-         f0, sp, ap = pw.wav2world(x, fs)
-         yy = pw.synthesize(f0/grave, sp/reduction, ap, fs/speed, pw.default_frame_period)
-         sf.write(output_file, yy, fs)
+         data, rate = sf.read(twav)
+         f0, sp, ap = pw.wav2world(data, rate)
+         yy = pw.synthesize(f0/grave, sp/reduction, ap, rate/speed, pw.default_frame_period)
+         sf.write(output_file, yy, rate)
 
       # elimina l'arxiu temporal
       if os.path.isfile(tmp3):
@@ -294,7 +293,7 @@ Parteix la sentència en fragments que puguin ser processats per gTTs
 @type to_veu: list; paràmetres de veu
 @type ends: string; caracter de finalització de la funció print
 """
-def Fragments(text, escena, to_veu, ends):
+def processa_fragment(text, escena, to_veu, ends):
    global seq_fragment, seq_actor, pendent_escolta
    long_text = len(text)
    ini = 0
@@ -325,7 +324,7 @@ Lectura del text sencer o de l'escena seleccionada de l'obra
 Partició del text en sentències (una sentència correspón a una línia del text)
 Cada sentència pot pertanyer, bé al narrador, bé a un personatge
 '''
-def Proces(escena=None):
+def processa_escena(escena=None):
    arxiu = base_arxiu_text + escena if escena else base_arxiu_text
    arxiu = f"{dir_dades}/{arxiu}.txt"
    escena = f"_{escena}_" if escena else "_"
@@ -339,25 +338,25 @@ def Proces(escena=None):
          ma = re.match(pattern_person, sentencia)
          if ma:
             personatje = ma.group(1)
-            Fragments(personatje, escena, "narrador", ": ")
+            processa_fragment(personatje, escena, "narrador", ": ")
             to_veu = Personatges[personatje] if personatje in Personatges else "narrador"
             # extraure, del text ma(3), els comentaris del narrador
             mb = re.match(pattern_narrador, ma.group(3))
             if mb:
                if mb.group(1) and mb.group(2) and mb.group(3):
-                  Fragments(mb.group(1), escena, to_veu, " ")
-                  Fragments(mb.group(2), escena, "narrador", " ")
-                  Fragments(mb.group(3), escena, to_veu, "\n")
+                  processa_fragment(mb.group(1), escena, to_veu, " ")
+                  processa_fragment(mb.group(2), escena, "narrador", " ")
+                  processa_fragment(mb.group(3), escena, to_veu, "\n")
                elif mb.group(1) and mb.group(2):
-                  Fragments(mb.group(1), escena, to_veu, " ")
-                  Fragments(mb.group(2), escena, "narrador", "\n")
+                  processa_fragment(mb.group(1), escena, to_veu, " ")
+                  processa_fragment(mb.group(2), escena, "narrador", "\n")
                elif mb.group(2) and mb.group(3):
-                  Fragments(mb.group(2), escena, "narrador", " ")
-                  Fragments(mb.group(3), escena, to_veu, "\n")
+                  processa_fragment(mb.group(2), escena, "narrador", " ")
+                  processa_fragment(mb.group(3), escena, to_veu, "\n")
             else:
-               Fragments(ma.group(3), escena, to_veu, "\n")
+               processa_fragment(ma.group(3), escena, to_veu, "\n")
          else:
-            Fragments(sentencia, escena, "narrador", "\n")
+            processa_fragment(sentencia, escena, "narrador", "\n")
 
 # ---------
 # principal
@@ -377,8 +376,8 @@ if __name__ == "__main__":
    app = Flask(__name__)
 
    if sencer or not escenes:
-      Proces()
+      processa_escena()
    else:
       escenes = os.listdir(f"{dir_dades}/{base_arxiu_text}*")
       for escena in escenes:
-         Proces(escena)
+         processa_escena(escena)

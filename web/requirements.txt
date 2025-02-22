@@ -1,9 +1,11 @@
 Flask
 gTTS
 pydub
+AudioSegment
 soundfile
 playsound
 pyworld
+pyaudio
 SpeechRecognition
 python-dotenv
 gunicorn

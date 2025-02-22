@@ -36,28 +36,28 @@ def setup():
    seq_text.pack()
    espai()
 
-   img_anterior = tk.PhotoImage(file="recursos/anterior.png")
-   img_play = tk.PhotoImage(file="recursos/play.png")
-   img_pausa = tk.PhotoImage(file="recursos/pausa.png")
-   img_rec = tk.PhotoImage(file="recursos/rec.png")
-   img_stop = tk.PhotoImage(file="recursos/stop.png")
-   img_seguent = tk.PhotoImage(file="recursos/seguent.png")
+   img_anterior = tk.PhotoImage(file="static/img/anterior.png")
+   img_play = tk.PhotoImage(file="static/img/play.png")
+   img_pausa = tk.PhotoImage(file="static/img/pausa.png")
+   img_rec = tk.PhotoImage(file="static/img/rec.png")
+   img_stop = tk.PhotoImage(file="static/img/stop.png")
+   img_seguent = tk.PhotoImage(file="static/img/seguent.png")
 
    btn_anterior = ttk.Button(root, image=img_anterior, command=anterior)
-   btn_play     = ttk.Button(root, image=img_play, command=play)
+   btn_player   = ttk.Button(root, image=img_play, command=player)
    btn_pausa = ttk.Button(root, image=img_pausa, command=pausa)
    btn_rec = ttk.Button(root, image=img_rec, command=gravacio)
    btn_stop = ttk.Button(root, image=img_stop, command=stop)
    btn_seguent = ttk.Button(root, image=img_seguent, command=seguent)
 
    btn_anterior.pack(side=tk.LEFT); btn_anterior.place(x=ample/2-40, y=alt-100)
-   btn_play.pack(side=tk.LEFT); btn_play.place(x=ample/2, y=alt-100)
+   btn_player.pack(side=tk.LEFT); btn_player.place(x=ample/2, y=alt-100)
    # btn_pausa.pack(side=tk.LEFT); btn_pausa.place(x=ample/2, y=alt-100)
    # btn_rec.pack(side=tk.LEFT); btn_rec.place(x=ample/2, y=alt-100)
    # btn_stop.pack(side=tk.LEFT); btn_stop.place(x=ample/2, y=alt-100)
    btn_seguent.pack(side=tk.RIGHT); btn_seguent.place(x=ample/2+40, y=alt-100)
 
-def play():
+def player():
    global seq_num
    seq_num = seq_num + 1
    if seq_num % 5 == 0:
@@ -96,17 +96,17 @@ def seleccio_escenes():
          escenes = []
       elif escenes == "joan":
          escenes = ["102","104","202","204","205","207"]
-         print(f"\n{c.CB_GRN}Es convertiran les escenes de'n Joan: {escenes}{c.C_NONE}", end='\n\n')
+         print(f"\nEs convertiran les escenes de'n Joan: {escenes}", end='\n\n')
       else:
          escenes = escenes.split()
-         print(f"\n{c.CB_GRN}Es convertiran les escenes indicades: {escenes}{c.C_NONE}", end='\n\n')
+         print(f"\nEs convertiran les escenes indicades: {escenes}", end='\n\n')
    else:
       escenes = ["101","102","103","104","105","106","201","202","203","204","205","206","207"]
-      print(f"\n{c.CB_GRN}Es convertiran (per defecte) les escenes: {escenes}{c.C_NONE}", end='\n\n')
+      print(f"\nEs convertiran (per defecte) les escenes: {escenes}", end='\n\n')
 
    sencer = not (escenes)
    if sencer:
-      print(f"\n{c.CB_GRN}Es convertirà l'arxiu sencer{c.C_NONE}", end='\n\n')
+      print("\nEs convertirà l'arxiu sencer", end='\n\n')
 
 
 def espai():

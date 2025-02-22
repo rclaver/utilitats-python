@@ -10,15 +10,19 @@
 </head>
 
 <body bgcolor="#FFFFFF">
+  {% if sentencia is not defined %}
+     {% set sentencia = "Escenes per a: " ~ actor %}
+  {% endif %}
+
   <div class="contenidor">
       <div class="titol">L'apuntador del teatre</div>
       <div id="div_error" class="error text"></div>
-      <div id="escena_actual" class="escena text">Escenes per a: "{{actor}}"</div>
+      <div id="escena_actual" class="escena text">{{sentencia}}</div>
 
       <div id="div_botons" class="div_botons contenidor">
-        <img id="btn_anterior" class="imatge " src="{{url_for('static', filename='img/web-anterior.png')}}" onClick="anterior();">
-        <img id="btn_play" class="imatge" onClick="{{ url_for('play', escena='{{actor}}') }}" src="{{url_for('static', filename='img/web-play.png')}}">
-        <img id="btn_seguent" class="imatge" src="{{url_for('static', filename='img/web-seguent.png')}}" onClick="seguent();">
+        <img id="btn_anterior" class="imatge" onClick="window.location.href='{{ url_for('anterior', escena=actor) }}';" src="{{url_for('static', filename='img/web-anterior.png')}}">
+        <img id="btn_player"   class="imatge" onClick="window.location.href='{{ url_for('player',   escena=actor) }}';" src="{{url_for('static', filename='img/web-play.png')}}">
+        <img id="btn_seguent"  class="imatge" onClick="window.location.href='{{ url_for('seguent',  escena=actor) }}';" src="{{url_for('static', filename='img/web-seguent.png')}}">
       </div>
   </div>
 </body>
