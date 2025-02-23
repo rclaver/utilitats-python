@@ -33,7 +33,7 @@
     const contenidorEscena = document.getElementById('escena_actual');
 
     // Conectar al endpoint de eventos
-    const eventSource = new EventSource('/{{estat}}');
+    const eventSource = new EventSource('/' + {{estat}});
 
     // Escuchar eventos de tipo "message" (el predeterminado)
     eventSource.onmessage = function(event) {

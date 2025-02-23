@@ -11,10 +11,10 @@ Ejecutar en la nube:
 - subir el repositorio a Github
 - crear una aplicación en dashboard.render.com
 """
-import os, re
+import os, re, time
 import difflib
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response, stream_with_context
 #from dotenv import load_dotenv
 from gtts import gTTS
 from io import BytesIO
@@ -33,6 +33,7 @@ import speech_recognition as sr
 titol = "casats"
 escena = ""
 actor = ""
+estat = "player"
 
 pattern_person = "^(\w*?\s?)(:\s?)(.*$)"
 pattern_narrador = "([^\(]*)(\(.*?\))(.*)"
@@ -74,6 +75,26 @@ def crear_app():
          return render_template("apuntador.tpl", actor=escena)
       else:
          return render_template("index.tpl")
+
+
+
+   @app.route("/player", methods = ["GET", "POST"])
+   def player():
+      global actor, arxiu_text, estat
+      estat = "stop"
+      if request.method == "GET":
+         actor = request.args.get("escena")
+      if actor == "sencer":
+         return Response(processa_escena(""), content_type='text/plain')
+      else:
+         if not os.path.isfile(f"{dir_dades}/{arxiu_text}-{actor}-*"):
+            return Response(processa_escena(actor), content_type='text/plain')
+         else:
+            arxiu_text += f"-{actor}-"
+            escenes = os.listdir(f"{dir_dades}/{arxiu_text}*")
+            for e in escenes:
+               ret = processa_escena(e)
+               return Response(stream_with_context({"data": ret}), content_type='text/event-stream')
 
 
 
@@ -216,13 +237,24 @@ def crear_app():
       #    audio = AudioSegment.from_wav(wav_buf)
       #    play(audio)
 
-      return mostra_sentencia(text)
+      return mostra_sentencia(text, ends)
+
+   def codifica_html(text):
+      cerca = "ÀÈÉÍÒÓÚàèéíòóú"
+      subs = ["&Agrave;","&Egrave;","&Eacute;","&Iacute;","&Ograve;","&Oacute;","&Uacute;","&agrave;","&egrave;","&eacute;","&iacute;","&ograve;","&oacute;","&uacute;"]
+      i = 0
+      for s in cerca:
+         text.replace(s, subs[i])
+         i += 1
+      return text
 
    '''
    Mostra el text que s'està processant.
    '''
-   def mostra_sentencia(text):
-      return render_template("apuntador.tpl", actor=escena, sentencia=text)
+   def mostra_sentencia(text, ends):
+      time.sleep(.5)
+      text = codifica_html(text) + ends
+      return text
 
    """
    Parteix la sentència en fragments que puguin ser processats per gTTs
@@ -246,7 +278,7 @@ def crear_app():
          seq_fragment += 1
          if text == actor:
             pendent_escolta = True
-            mostra_sentencia(text, escena)
+            ret = mostra_sentencia(text, ends)
          elif pendent_escolta == True:
             pendent_escolta = False
             seq_actor += 1
@@ -301,31 +333,26 @@ def crear_app():
             else:
                ret += processa_fragment(sentencia, escena, Narrador, "\n")
 
-         return ret
+         print(ret)
+         yield ret
 
-   @app.route("/player", methods = ["GET", "POST"])
-   def player():
-      global actor, arxiu_text
-      if request.method == "GET":
-         actor = request.args.get("escena")
-      if actor == "sencer":
-         return processa_escena("")
-      else:
-         if not os.path.isfile(f"{dir_dades}/{arxiu_text}-{actor}-*"):
-            return processa_escena(actor)
-         else:
-            arxiu_text += f"-{actor}-"
-            escenes = os.listdir(f"{dir_dades}/{arxiu_text}*")
-            for escena in escenes:
-               return processa_escena(escena)
+
+
+   @app.route("/stop", methods = ["GET", "POST"])
+   def stop():
+      global estat
+      estat = "player"
+      return render_template("apuntador.tpl", actor=escena, estat=estat)
 
    @app.route("/anterior", methods = ["GET", "POST"])
    def anterior():
-      return render_template("apuntador.tpl", actor=escena)
+      global estat
+      return render_template("apuntador.tpl", actor=escena, estat=estat)
 
    @app.route("/seguent", methods = ["GET", "POST"])
    def seguent():
-      return render_template("apuntador.tpl", actor=escena)
+      global estat
+      return render_template("apuntador.tpl", actor=escena, estat=estat)
 
 
    return app
