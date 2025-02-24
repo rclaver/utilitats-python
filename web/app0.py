@@ -4,8 +4,6 @@
 Created on Thu Feb 20 16:32:05 2025
 @author: rafael
 
-pip install flask flask-socketio
-
 Las aplicaciones Python con Flask deben ejecutarse desde una terminal.
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
 
@@ -15,12 +13,9 @@ Ejecutar en la nube:
 """
 import os, re, time
 import difflib
-import threading
 
-from flask import Flask, render_template, request
-from flask_socketio import SocketIO
+from flask import Flask, render_template, request, Response
 #from dotenv import load_dotenv
-
 from gtts import gTTS
 from io import BytesIO
 import soundfile as sf
@@ -39,8 +34,6 @@ titol = "casats"
 escena = ""
 actor = ""
 estat = "inici"
-en_pausa = False
-stop = False
 
 pattern_person = "^(\w*?\s?)(:\s?)(.*$)"
 pattern_narrador = "([^\(]*)(\(.*?\))(.*)"
@@ -67,27 +60,24 @@ Narrador = "narrador"
 
 def crear_app():
    app = Flask(__name__) #instancia de Flask
-   socketio = SocketIO(app)
    key_secret = os.getenv("API_KEY")
 
-   #%%
    @app.route("/index")
    def index():
       return render_template("index.tpl")
 
-   #%%
    @app.route("/apuntador", methods = ["GET", "POST"])
    def apuntador():
       global escena
       if request.method == "POST":
          escena = request.form.get("seleccio_escenes")
       if escena:
-         return render_template("apuntador4.tpl", actor=escena)
+         return render_template("apuntador.tpl", actor=escena)
       else:
          return render_template("index.tpl")
 
 
-   #%%
+
    def beep():
       plays.playsound(f"{dir_recursos}/beep.wav")
 
@@ -323,69 +313,47 @@ def crear_app():
             else:
                ret += processa_fragment(sentencia, escena, Narrador, "\n")
 
-         if stop:
-            break  # Detener la lectura
-         while en_pausa:
-            time.sleep(0.1)  # Esperar mientras esté en pausa
-
          print(ret)
-         socketio.emit('new_line', {'frase': ret})  # Enviar la línea al cliente
+         yield ret
 
-   def principal():
-      global actor, arxiu_text
+
+
+   @app.route("/inici", methods = ["GET", "POST"])
+   def inici():
+      global actor, arxiu_text, estat
+      estat = "stop"
+      if request.method == "GET":
+         actor = request.args.get("escena")
       if actor == "sencer":
-         return processa_escena("")
+         return Response(processa_escena(""), content_type='text/plain')
       else:
          if not os.path.isfile(f"{dir_dades}/{arxiu_text}-{actor}-*"):
-            return processa_escena(actor)
+            return Response(processa_escena(actor), content_type='text/plain')
          else:
             arxiu_text += f"-{actor}-"
             escenes = os.listdir(f"{dir_dades}/{arxiu_text}*")
             for e in escenes:
-               return processa_escena(e)
+               return Response(processa_escena(e), content_type='text/event-stream')
 
-   #%%
-   # Evento que se dispara cuando un cliente se conecta
-   @socketio.on('connect')
-   def handle_connect():
-       print("Client connectat")
-       # Iniciamos la lectura del archivo en un hilo separado para no bloquear el servidor
-       threading.Thread(target=principal).start()
-
-   #%%
-   @app.route("/inici")
-   def inici():
-      global estat
-      estat = "stop"
-      ret = principal()
-      return ret
-
-
-   #%%
    @app.route("/stop", methods = ["GET", "POST"])
    def stop():
       global estat
       estat = "inici"
-      return render_template("apuntador4.tpl", actor=escena, estat=estat)
+      return render_template("apuntador.tpl", actor=escena, estat=estat)
 
-
-   #%%
    @app.route("/anterior", methods = ["GET", "POST"])
    def anterior():
       global estat
-      return render_template("apuntador4.tpl", actor=escena, estat=estat)
+      return render_template("apuntador.tpl", actor=escena, estat=estat)
 
-
-   #%%
    @app.route("/seguent", methods = ["GET", "POST"])
    def seguent():
       global estat
-      return render_template("apuntador4.tpl", actor=escena, estat=estat)
+      return render_template("apuntador.tpl", actor=escena, estat=estat)
 
 
    return app
 
-   #%%
 if __name__ == "__main__":
    '''
    Permet la creació de l'aplicació a GitHub

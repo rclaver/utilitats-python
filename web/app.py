@@ -4,6 +4,8 @@
 Created on Thu Feb 20 16:32:05 2025
 @author: rafael
 
+pip install flask flask-socketio
+
 Las aplicaciones Python con Flask deben ejecutarse desde una terminal.
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
 
@@ -11,11 +13,15 @@ Ejecutar en la nube:
 - subir el repositorio a Github
 - crear una aplicación en dashboard.render.com
 """
-import os, re, time
+import os, re, time, glob
+#from pathlib import Path
 import difflib
+import threading
 
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO, emit
 #from dotenv import load_dotenv
+
 from gtts import gTTS
 from io import BytesIO
 import soundfile as sf
@@ -31,9 +37,10 @@ import speech_recognition as sr
 # variables globals
 #
 titol = "casats"
-escena = ""
 actor = ""
 estat = "inici"
+en_pausa = False
+stop = False
 
 pattern_person = "^(\w*?\s?)(:\s?)(.*$)"
 pattern_narrador = "([^\(]*)(\(.*?\))(.*)"
@@ -60,24 +67,27 @@ Narrador = "narrador"
 
 def crear_app():
    app = Flask(__name__) #instancia de Flask
+   socketio = SocketIO(app)
    key_secret = os.getenv("API_KEY")
 
+   #%%
    @app.route("/index")
    def index():
       return render_template("index.tpl")
 
+   #%%
    @app.route("/apuntador", methods = ["GET", "POST"])
    def apuntador():
-      global escena
+      global actor
       if request.method == "POST":
-         escena = request.form.get("seleccio_escenes")
-      if escena:
-         return render_template("apuntador.tpl", actor=escena)
+         actor = request.form.get("seleccio_escenes")
+      if actor:
+         return render_template("apuntador4.tpl", actor=actor)
       else:
          return render_template("index.tpl")
 
 
-
+   #%%
    def beep():
       plays.playsound(f"{dir_recursos}/beep.wav")
 
@@ -276,14 +286,13 @@ def crear_app():
    Partició del text en sentències (una sentència correspón a una línia del text)
    Cada sentència pot pertanyer, bé al narrador, bé a un personatge
    '''
-   def processa_escena(escena=""):
-      if not os.path.isfile(f"{dir_dades}/{arxiu_text}{escena}.txt"):
-         arxiu = f"{dir_dades}/{arxiu_text}.txt"
-      else:
-         arxiu = f"{dir_dades}/{arxiu_text}{escena}.txt"
-      escena = f"_{escena}_" if escena else "_"
+   def processa_escena(arxiu_escena=""):
+      global stop, en_pausa
+      escena = f"_{arxiu_escena}_" if arxiu_escena else "_"
+      if not os.path.isfile(arxiu_escena):
+         arxiu_escena = f"{dir_dades}/{arxiu_text}.txt"
 
-      with open(arxiu, 'r', encoding="utf-8") as f:
+      with open(arxiu_escena, 'r', encoding="utf-8") as f:
          sentencies = f.read().split('\n')
 
       for sentencia in sentencies:
@@ -313,47 +322,96 @@ def crear_app():
             else:
                ret += processa_fragment(sentencia, escena, Narrador, "\n")
 
+         if stop:
+            break  # Detener la lectura
+         while en_pausa:
+            time.sleep(0.1)  # Esperar mientras esté en pausa
+
          print(ret)
-         yield ret
+         socketio.emit('new_line', {'frase': ret, 'estat': estat})  # Enviar la línea al cliente
+         time.sleep(1)
 
-
-
-   @app.route("/inici", methods = ["GET", "POST"])
-   def inici():
-      global actor, arxiu_text, estat
-      estat = "stop"
-      if request.method == "GET":
-         actor = request.args.get("escena")
+   def principal():
+      global actor, arxiu_text
+      print("actor:", actor)
       if actor == "sencer":
-         return Response(processa_escena(""), content_type='text/plain')
+         processa_escena("")
       else:
-         if not os.path.isfile(f"{dir_dades}/{arxiu_text}-{actor}-*"):
-            return Response(processa_escena(actor), content_type='text/plain')
+         escenes = glob.glob(f"{dir_dades}/{arxiu_text}-{actor}-*")
+         if not escenes:
+            processa_escena(actor)
          else:
             arxiu_text += f"-{actor}-"
-            escenes = os.listdir(f"{dir_dades}/{arxiu_text}*")
+            #escenes = os.scandir(f"{dir_dades}")
+            escenes.sort()
+            print("escenes:", escenes)
             for e in escenes:
-               return Response(processa_escena(e), content_type='text/event-stream')
+               print("escena actual:", e)
+               processa_escena(e)
 
+
+   #%%
+   # Evento que se dispara cuando un cliente se conecta
+   @socketio.on('connect')
+   def handle_connect():
+       print("Client connectat")
+       # Iniciamos la lectura del archivo en un hilo separado para no bloquear el servidor
+
+   @socketio.on('inici')
+   def handle_start():
+       global estat, stop, en_pausa
+       print("botó inici")
+       estat = "stop"
+       stop = False
+       en_pausa = False
+       threading.Thread(target=principal).start()
+
+   @socketio.on('pausa')
+   def handle_pause():
+       global en_pausa
+       print("botó pausa")
+       en_pausa = not en_pausa
+
+   @socketio.on('stop')
+   def handle_stop():
+       global stop
+       print("botó stop")
+       stop = True  # Detener la lectura del archivo
+
+   #%%
+   @app.route("/inici")
+   def inici():
+      global estat
+      estat = "stop"
+      ret = principal()
+      return ret
+
+
+   #%%
    @app.route("/stop", methods = ["GET", "POST"])
    def stop():
       global estat
       estat = "inici"
-      return render_template("apuntador.tpl", actor=escena, estat=estat)
+      return render_template("apuntador4.tpl", actor=actor, estat=estat)
 
+
+   #%%
    @app.route("/anterior", methods = ["GET", "POST"])
    def anterior():
       global estat
-      return render_template("apuntador.tpl", actor=escena, estat=estat)
+      return render_template("apuntador4.tpl", actor=actor, estat=estat)
 
+
+   #%%
    @app.route("/seguent", methods = ["GET", "POST"])
    def seguent():
       global estat
-      return render_template("apuntador.tpl", actor=escena, estat=estat)
+      return render_template("apuntador4.tpl", actor=actor, estat=estat)
 
 
    return app
 
+   #%%
 if __name__ == "__main__":
    '''
    Permet la creació de l'aplicació a GitHub
