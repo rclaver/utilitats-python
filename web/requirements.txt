@@ -1,3 +1,5 @@
+threading
+SocketIO
 Flask
 gTTS
 pydub
