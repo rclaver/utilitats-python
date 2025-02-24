@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
   {% include "head.tpl" %}
 </head>
 
@@ -9,7 +6,7 @@
      {% set sentencia = "Escenes per a: " ~ actor %}
   {% endif %}
   {% if estat is not defined %}
-     {% set estat = "player" %}
+     {% set estat = "inici" %}
   {% endif %}
 
   <div class="contenidor">
@@ -33,7 +30,7 @@
     const contenidorEscena = document.getElementById('escena_actual');
 
     // Conectar al endpoint de eventos
-    const eventSource = new EventSource('/' + {{estat}});
+    const eventSource = new EventSource('/{{estat}}');
 
     // Escuchar eventos de tipo "message" (el predeterminado)
     eventSource.onmessage = function(event) {

@@ -14,7 +14,7 @@ Ejecutar en la nube:
 import os, re, time
 import difflib
 
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, stream_with_context
 #from dotenv import load_dotenv
 from gtts import gTTS
 from io import BytesIO
@@ -72,7 +72,7 @@ def crear_app():
       if request.method == "POST":
          escena = request.form.get("seleccio_escenes")
       if escena:
-         return render_template("apuntador.tpl", actor=escena)
+         return render_template("apuntador2.tpl", actor=escena)
       else:
          return render_template("index.tpl")
 
@@ -333,23 +333,24 @@ def crear_app():
             arxiu_text += f"-{actor}-"
             escenes = os.listdir(f"{dir_dades}/{arxiu_text}*")
             for e in escenes:
-               return Response(processa_escena(e), content_type='text/event-stream')
+               ret = processa_escena(e)
+               return Response(stream_with_context({"data": ret}), content_type='text/event-stream')
 
    @app.route("/stop", methods = ["GET", "POST"])
    def stop():
       global estat
       estat = "inici"
-      return render_template("apuntador.tpl", actor=escena, estat=estat)
+      return render_template("apuntador2.tpl", actor=escena, estat=estat)
 
    @app.route("/anterior", methods = ["GET", "POST"])
    def anterior():
       global estat
-      return render_template("apuntador.tpl", actor=escena, estat=estat)
+      return render_template("apuntador2.tpl", actor=escena, estat=estat)
 
    @app.route("/seguent", methods = ["GET", "POST"])
    def seguent():
       global estat
-      return render_template("apuntador.tpl", actor=escena, estat=estat)
+      return render_template("apuntador2.tpl", actor=escena, estat=estat)
 
 
    return app

@@ -44,20 +44,20 @@ def setup():
    img_seguent = tk.PhotoImage(file="static/img/seguent.png")
 
    btn_anterior = ttk.Button(root, image=img_anterior, command=anterior)
-   btn_player   = ttk.Button(root, image=img_play, command=player)
+   btn_inici   = ttk.Button(root, image=img_play, command=inici)
    btn_pausa = ttk.Button(root, image=img_pausa, command=pausa)
    btn_rec = ttk.Button(root, image=img_rec, command=gravacio)
    btn_stop = ttk.Button(root, image=img_stop, command=stop)
    btn_seguent = ttk.Button(root, image=img_seguent, command=seguent)
 
    btn_anterior.pack(side=tk.LEFT); btn_anterior.place(x=ample/2-40, y=alt-100)
-   btn_player.pack(side=tk.LEFT); btn_player.place(x=ample/2, y=alt-100)
+   btn_inici.pack(side=tk.LEFT); btn_inici.place(x=ample/2, y=alt-100)
    # btn_pausa.pack(side=tk.LEFT); btn_pausa.place(x=ample/2, y=alt-100)
    # btn_rec.pack(side=tk.LEFT); btn_rec.place(x=ample/2, y=alt-100)
    # btn_stop.pack(side=tk.LEFT); btn_stop.place(x=ample/2, y=alt-100)
    btn_seguent.pack(side=tk.RIGHT); btn_seguent.place(x=ample/2+40, y=alt-100)
 
-def player():
+def inici():
    global seq_num
    seq_num = seq_num + 1
    if seq_num % 5 == 0:
