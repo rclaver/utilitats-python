@@ -21,9 +21,10 @@
       <img id="btn_seguent" class="imatge" src="static/img/web-seguent.png" onClick="seguent();">
     </div>
   </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var formu = formulari();
+      var formu = formulari_a();
       var actor = get_parametres("seleccio_escenes");
       document.getElementById('div_error').innerHTML = 'Escenes de : "' + actor + '"';
     });

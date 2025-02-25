@@ -4,21 +4,11 @@ function formulari() {
    var error, s_escena, i;
    s_escena = document.getElementById("seleccio_escenes");
    i = s_escena.selectedIndex;
-   if (i >= 0) {
-      error = "";
-      escena = s_escena.options[i].value;
-   }else {
-      error = "No has seleccionat cap escena";
-   }
-   visible("div_formulari", false);
-   visible("div_error", true);
-   visible("escena_actual", true);
-   visible("div_botons", true);
-   document.getElementById("div_error").innerHTML = error;
-   return escena;
+   escena = s_escena.options[i].value;
+   apuntador(escena)
 }
 
-function play(escena) {
+function apuntador(escena) {
    var xhr;
    var contenidoRecibido = '';
 
@@ -35,7 +25,45 @@ function play(escena) {
          document.getElementById("escena_actual").innerHTML = contenidoRecibido;
       }
    };
+   xhr.open("GET","apuntador.html?escena="+escena);
+   xhr.send();
+}
 
+function formulari_a() {
+   var error, s_escena, i;
+   s_escena = document.getElementById("seleccio_escenes");
+   i = s_escena.selectedIndex;
+   if (i >= 0) {
+      error = "";
+      escena = s_escena.options[i].value;
+   }else {
+      error = "No has seleccionat cap escena";
+   }
+   //visible("div_formulari", false);
+   visible("div_error", true);
+   visible("escena_actual", true);
+   visible("div_botons", true);
+   document.getElementById("div_error").innerHTML = error;
+   return escena;
+}
+
+function inici(escena) {
+   var xhr;
+   var contenidoRecibido = '';
+
+   if (escena.length===0) {
+      document.getElementById("escena_actual").innerHTML = "";
+      return;
+   }
+
+   xhr = new XMLHttpRequest();
+
+   xhr.onreadystatechange = function() {
+      if (xhr.readyState===4 && xhr.status===200) {
+         contenidoRecibido = xhr.responseText;
+         document.getElementById("escena_actual").innerHTML = contenidoRecibido;
+      }
+   };
    xhr.open("POST","apuntador.py?escena="+escena);
    xhr.send();
 }
