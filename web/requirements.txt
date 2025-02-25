@@ -5,7 +5,6 @@ gTTS
 pydub
 AudioSegment
 soundfile
-#playsound
 pyworld
 pyaudio
 SpeechRecognition
