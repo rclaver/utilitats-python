@@ -116,6 +116,9 @@ def processaJsonFinal(key, value):
    jsonFinal += '\"' + trans + '\":' + value + ','
 
 
+def processaJsonParcial(cadenaComp):
+   jstring = json.loads(cadenaComp)
+
 """
  Procés principal: tractament de tots els elements de l'arrayOrigen
 """
@@ -153,6 +156,7 @@ print("Importació de dades d'un pla de treball LOE a un nou pla de treball LOE2
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 arxiuMdpr = "~/projectes/wiki18/data/mdprojects/docs/loe_1/ptfploe/meta.mdpr"
+jsonFinal = '{"main":{'
 
 if processarArxiuDades(arxiuMdpr):
    proces()
