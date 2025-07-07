@@ -1,6 +1,9 @@
 ~*
 *.*~
-*.pyc
 __pycache__/
-.flaskenv
+.htaccess
+.env
+*.pyc
+.venv
 .spyproject
+.flaskenv
