@@ -1,7 +1,6 @@
 # =======
-# COLORES
+# COLORS
 # =======
-# Ejemplo: echo -e ${C_RED} rojo
 
 C_NONE="\033[0m"    # unsets color to term's fg color
 
@@ -34,3 +33,7 @@ BG_BLU="\033[44m"
 BG_MAG="\033[45m"
 BG_CYN="\033[46m"
 BG_WHT="\033[47m"
+
+# mode
+M_NOR="\033[23m"  # normal
+M_CUR="\033[03m"  # cursiva
